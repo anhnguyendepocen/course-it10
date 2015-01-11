@@ -44,6 +44,7 @@
 \def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
 \def\lit#1{\textcolor{med-gray}{\tiny (#1)}}
 \def\litc#1{\textcolor{med-gray}{\tiny\citep{#1}}}
+\def\litf#1{\textcolor{med-gray}{\tiny\citep*{#1}}}
 \setbeamercolor{structure}{fg=zewblue}
 \def\blue#1{\textcolor{zewblue}{#1}}
 \def\vect#1{\mathbold{#1}}
@@ -118,7 +119,7 @@
 	\begin{itemize}
 		\item Understand and predict behavioral responses to redistributive policies
 		\smallskip
-		\item Estimation of structural utility models allows various welfare analyses
+		\item Estimation of structural utility models allows various welfare analyses \litf{bargain_etal_2013, bargain_etal_itax_2014, bargain_etal_annes_2014}
 	\end{itemize}
 	\bigskip
 	\item \blue{Applied session}
@@ -200,7 +201,7 @@
 		\smallskip
 		\item Classic models assume maximization over continuous range of working hours, i.e.\ \blue{$\max_{h=[0,60]} U(C[h],L[h])$} \litc{burtless_hausman_1978, hausman_1981}
 		\smallskip
-		\item More recent models usually assume discrete choice between different jobs, i.e.\ \blue{$\max_{j\in J} U(C_j,L_j)$} \litc{aaberge_etal_1995, vansoest_1995, hoynes_1996}
+		\item More recent models usually assume discrete choice between different jobs, i.e.\ \blue{$\max_{j\in J} U(C_j,L_j)$} \litf{aaberge_etal_1995, vansoest_1995, hoynes_1996}
 		\smallskip
 		\item Individual subscripts omitted, but no time subscripts: ``steady-state'' models
 	\end{itemize}
@@ -254,18 +255,18 @@
 			\smallskip
 			\item Hours discretized to interval means: \blue{$h_j\in[0, 10, 20, 30, 40, 50, 60]$}
 		\end{enumerate}
-		\litc{vansoest_1995, hoynes_1996, keane_moffitt_1998, blundell_etal_2000, bargain_etal_2014}
+		\litf{vansoest_1995, hoynes_1996, keane_moffitt_1998, euwals_vansoest_1999, blundell_etal_2000, vansoest_etal_2002, bargain_etal_2014}
 		\smallskip
 		\item This simple model generates seven choices for each individual
 	\end{itemize}
 	\bigskip
 	\item \blue{Modeling approach is rather restrictive.} Alternative approaches:
 	\begin{itemize}
-		\item Define random choice-set instead of discretized hours intervals \litc{aaberge_etal_2009}
+		\item Define random choice-set instead of fixed hours \litf{aaberge_etal_2009}
 		\smallskip
-		\item Allow correlation between wages and preferences \litc{blundell_shephard_2012}
+		\item Allow correlation between wages and preferences \litf{blundell_shephard_2012}
 		\smallskip
-		\item Allow hours-dependent wages and flexible correlation \litc{loeffler_etal_2014}
+		\item Allow hours-dependent wages and flexible correlation \litf{loeffler_etal_2014}
 	\end{itemize}
 \end{itemize}
 \end{frame}
@@ -407,7 +408,7 @@
 	\begin{itemize}
 		\item User-written command \verb+lslogit+ for labor supply estimation \litc{loeffler_2013}
 		\smallskip
-		\item Supports many heavily used utility specifications and extensions \litc{loeffler_etal_2014}
+		\item Supports often used specifications and extensions \litf{loeffler_etal_2014}
 		\smallskip
 		\item Call by: \verb+lslogit choice [fw=...], group(id) con(dpi) lei(leisure)+
 	\end{itemize}
