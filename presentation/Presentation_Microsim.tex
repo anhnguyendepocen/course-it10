@@ -1,0 +1,725 @@
+\documentclass[handout,intlimits]{beamer}
+%\documentclass[intlimits]{beamer}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman,english]{babel}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{eurosym}
+\usepackage{booktabs}
+\usepackage{dcolumn}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[sc]{mathpazo}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage[bitstream-charter]{mathdesign}
+\usepackage{xcolor}
+\usepackage{longtable}
+\usepackage{dcolumn}
+\usepackage[comma]{natbib}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\usepackage{ellipsis}
+\usepackage{soul}
+\usepackage{tabularx}
+\usepackage{microtype}
+
+
+% DEFINITIONS
+\definecolor{izablue}{RGB}{54,91,160}
+\definecolor{zewblue}{RGB}{42,107,183}
+\definecolor{med-gray}{gray}{0.35}
+\definecolor{izagray}{RGB}{220,220,220}
+\definecolor{gray}{RGB}{242,242,242}
+\newcommand{\beginbackup}{
+	\newcounter{framenumberpreappendix}
+	\setcounter{framenumberpreappendix}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+	\addtocounter{framenumberpreappendix}{-\value{framenumber}}
+	\addtocounter{framenumber}{\value{framenumberpreappendix}}
+}
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\def\lit#1{\textcolor{med-gray}{\tiny (#1)}}
+\def\litc#1{\textcolor{med-gray}{\tiny\citep{#1}}}
+\setbeamercolor{structure}{fg=zewblue}
+\def\blue#1{\textcolor{zewblue}{#1}}
+\def\vect#1{\mathbold{#1}}
+\lstset{basicstyle=\ttfamily}
+\beamertemplatenavigationsymbolsempty
+\setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}
+% / DEFINITIONS
+
+
+% ZEW STUFF
+\setbeamercolor{section in head/foot}{fg=white, bg=zewblue}
+\setbeamertemplate{footline}{%
+	\begin{beamercolorbox}[ht=3ex]{section in head/foot}%
+		\hspace{1em}\insertshortauthor\,(\insertshortinstitute):\,\insertshorttitle\hfill%
+		\insertframenumber\,/\,\inserttotalframenumber\kern1em\vskip0.5pt%
+	\end{beamercolorbox}
+}
+\setbeamertemplate{headline}{%
+	\begin{beamercolorbox}[ht=3ex]{section in head/foot}%
+		\hspace{1em}\insertsection\hfill\kern0.5em\textcolor{zewblue}{g}\vskip0.5pt%
+	\end{beamercolorbox}
+}
+\setbeamersize{text margin left=0.5em}
+\setbeamersize{text margin right=1.5em}
+% / ZEW STUFF
+
+
+
+% BEGIN DOCUMENT
+\begin{document}
+\shorthandoff{"}
+
+
+% DOCUMENT INFORMATION
+\title{Redistribution in Microsimulation\\ Models with Behavioral Responses}
+\author[Löffler]{Max Löffler}
+\institute[ZEW]{ZEW and University of Cologne}
+\date[January 14, 2015]{Canazei --- January 14, 2015}
+
+
+% TITLE PAGE
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BEGIN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Introduction}
+
+\begin{frame}
+\frametitle{What is this session about?}
+\begin{itemize}
+	\item \blue{Redistribution:} ``If top tax rate was 53 instead of 42\,\%, how would that affect net incomes, income inequality or work incentives?''
+	\bigskip
+	\item \blue{Microsimulation:} Ex ante analysis to evaluate counterfactual situations or policy reforms that are to be implemented in the future
+	\bigskip
+	\item \blue{Models:} Analysis starting from economic theory and theoretic models
+	\bigskip
+	\item \blue{Behavioral Responses:} Allows to study adjustments to changed incentives and predict responses to counterfactual situations
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Motivation}
+\begin{itemize}
+	\item \blue{Why could this be interesting for inequality and welfare analysis?}
+	\begin{itemize}
+		\item Understand and predict behavioral responses to redistributive policies
+		\smallskip
+		\item Estimation of structural utility models allows various welfare analyses
+	\end{itemize}
+	\bigskip
+	\item \blue{Applied session}
+	\begin{itemize}
+		\item How do these models work?
+		\smallskip
+		\item How to estimate them?
+		\smallskip
+		\item How to predict behavior?
+	\end{itemize}
+	\bigskip
+	\item \blue{Several references included} \litc{creedy_kalb_2005, creedy_kalb_2006, aaberge_colombino_2014}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\begin{enumerate}
+	\item Short introduction and motivation
+	\bigskip
+	\item How to use these models?
+	\begin{enumerate}
+		\item Basic workflow using such models
+		\smallskip
+		\item Underlying theory and modeling assumptions
+		\smallskip
+		\item Data and choice set construction
+		\smallskip
+		\item How to estimate these models
+		\smallskip
+		\item Using these models for policy analyses
+	\end{enumerate}
+	\bigskip
+	\item Model extensions
+	\bigskip
+	\item Applied session
+	\bigskip
+	\item References
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Basic workflow}
+\begin{enumerate}
+	\item Specify a theoretical model of individual labor supply behavior
+	\begin{itemize}
+		\item E.g.\ $U=U\left(C,L\right)$, individuals maximize their utility over potential jobs
+		\smallskip
+		\item Jobs defined by wages $w$, working hours $h$ and other characteristics $\epsilon$
+	\end{itemize}
+	\bigskip
+	\item Find suitable data and set up the choice set
+	\begin{itemize}
+		\item Identify chosen jobs (hours, wages and characteristics observed in the data)
+		\smallskip
+		\item Add counterfactual choices and simulate hypothetical hours and net incomes
+	\end{itemize}
+	\bigskip
+	\item Estimate the model using this choice set, obtain preference estimates
+	\bigskip
+	\item Hold preferences constant and simulate counterfactual scenarios
+	\begin{itemize}
+		\item Study behavioral adjustments if tax/benefit system or wages were different
+		\smallskip
+		\item Calculate welfare measures (e.g.\ compensating variation, utility differentials)
+	\end{itemize}
+\end{enumerate}
+\end{frame}
+
+
+\section{Model}
+
+\begin{frame}
+\frametitle{Theoretical model}
+\begin{itemize}
+	\item \blue{Agents receive utility from consumption $C$ and leisure $L$}
+	\begin{itemize}
+		\item Mainly two different classes of models have been used over the last decades
+		\smallskip
+		\item Classic models assume maximization over continuous range of working hours, i.e.\ \blue{$\max_{h=[0,60]} U(C[h],L[h])$} \litc{burtless_hausman_1978, hausman_1981}
+		\smallskip
+		\item More recent models usually assume discrete choice between different jobs, i.e.\ \blue{$\max_{j\in J} U(C_j,L_j)$} \litc{aaberge_etal_1995, vansoest_1995, hoynes_1996}
+		\smallskip
+		\item Individual subscripts omitted, but no time subscripts: ``steady-state'' models
+	\end{itemize}
+	\bigskip
+	\item \blue{Agents choose jobs and maximize utility.} How does it look like?
+	\begin{itemize}
+		\item Individual $n$'s utility of choosing job $j$ is defined as \blue{$U_{nj} = U\left(C_{nj},L_j,\epsilon_{nj}\right)$}
+		\smallskip
+		\item Researcher needs to identify form of $U$, distribution of $\epsilon_{nj}$ and job offers
+		\smallskip
+		\item Observed choices inform us about maximum utility and optimal working hours
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Identification}
+\begin{itemize}
+	\item \blue{Wait, agents' labor supply is thus determined by consumption and leisure, both functions of working hours?} Isn't that tautological?
+	\begin{itemize}
+		\item Right. That's why econometricians care so much about identification
+		\smallskip
+		\item Non-parametric identification impossible with cross-sectional data \litc{manski_2014}
+		\smallskip
+		\item But even cross-sectional data typically gives us variation in wages, non-labor incomes, taxes and transfers (=consumption) for given working hours
+	\end{itemize}
+	\bigskip
+	\item \blue{Use structural model and impose specific functional form}, e.g.
+	\begin{itemize}
+		\item $U_{nj} = \alpha_1 \ln C_{nj} + \alpha_2 (\ln C_{nj})^2 + \alpha_3 \ln L_j + \alpha_4 (\ln L_j)^2 + \alpha_5  \ln C_{nj} \ln L_j + \epsilon_{nj}$
+		\smallskip
+		\item $C_{nj}$ accounts for earnings $w_{nj}L_j$, non-labor income $I$ and tax/benefit system
+		\smallskip
+		\item Assumes homogeneous preferences and specific functional form
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Job offers and hours categories}
+\begin{itemize}
+	\item \blue{We assume that individuals choose among jobs, but what is a job?}
+	\begin{itemize}
+		\item A job $j$ is defined by hours $h_j$, wages $w_{nj}$ and unobservables $\epsilon_{nj}$
+		\smallskip
+		\item Most often, job modeling boils down to three simple assumptions:
+		\begin{enumerate}
+			\item Unobservables follow Gumbel distribution: \blue{$\epsilon_{nj}\sim GEV(0,1,0)$}
+			\smallskip
+			\item Wages assumed exogenous to hours or preferences: \blue{$w_{nj}=w_n$}
+			\smallskip
+			\item Hours discretized to interval means: \blue{$h_j\in[0, 10, 20, 30, 40, 50, 60]$}
+		\end{enumerate}
+		\litc{vansoest_1995, hoynes_1996, keane_moffitt_1998, blundell_etal_2000, bargain_etal_2014}
+		\smallskip
+		\item This simple model generates seven choices for each individual
+	\end{itemize}
+	\bigskip
+	\item \blue{Modeling approach is rather restrictive.} Alternative approaches:
+	\begin{itemize}
+		\item Define random choice-set instead of discretized hours intervals \litc{aaberge_etal_2009}
+		\smallskip
+		\item Allow correlation between wages and preferences \litc{blundell_shephard_2012}
+		\smallskip
+		\item Allow hours-dependent wages and flexible correlation \litc{loeffler_etal_2014}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\section{Data}
+
+\begin{frame}
+\frametitle{Data sources}
+\begin{itemize}
+	\item \blue{What kind of data is required for the estimation?}
+	\begin{itemize}
+		\item The model requires information at least on wages and working hours
+		\smallskip
+		\item Ideally, the data also contains household characteristics, information on children, demographics, social background, occupational information, \dots
+		\smallskip
+		\item Most models based on cross-sectional data, but panel data highly useful
+	\end{itemize}
+	\bigskip
+	\item \blue{Which data sets are used in practice?}
+	\begin{itemize}
+		\item Usually household surveys, only rarely administrative data because working hours are seldom reported in tax registers or social security records
+		\smallskip
+		\item EU: SILC, US: CPS, PSID, NLSY, Germany: SOEP, Britain: BHPS, \dots
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Tax/benefit calculator}
+\begin{itemize}
+	\item \blue{What we need to do with the data}
+	\begin{itemize}
+		\item Clean up sample and keep only working-age population (or subgroups)
+		\smallskip
+		\item Create choice set according to job model (for now: simple approach)
+		\smallskip
+		\item Calculate individual wage rates (and impute wage for non-workers)
+		\smallskip
+		\item Duplicate individual observations by number of hypothetical choices
+	\end{itemize}
+	\bigskip
+	\item \blue{How to create hypothetical job choices?}
+	\begin{itemize}
+		\item Define weekly/monthly working hours for every hypothetical job choice
+		\smallskip
+		\item Based on hypothetical hours and wages, calculate gross earnings for all jobs
+		\smallskip
+		\item Apply tax/benefit calculator to these hypothetical households with their hypothetical working hours and gross earnings to get disposable income
+		\smallskip
+		\item Popular calculators: EUROMOD for Europe, TAXSIM for the US, \dots
+	\end{itemize}
+	\bigskip
+	\item \blue{Observed working hours inform us about the job actually chosen}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Browsing through the data}
+\begin{itemize}
+	\item The resulting data set should look somehow like this one:
+\end{itemize}
+\begin{table}[htbp]
+	\centering\tiny
+	\begin{threeparttable}
+	\begin{tabular}{rrrrrrrrr}
+	\toprule
+	\textbf{\#} & \textbf{id} & \textbf{hours} & \textbf{wage} & \textbf{gross} & \textbf{dpi} & \textbf{leisure} & \textbf{choice} & \textbf{\dots} \\
+	\midrule
+	1	&	1	&	0	&	7.5	&	0	&	400	&	80	&	0	& \dots \\
+	2	&	1	&	10	&	7.5	&	300	&	500	&	70	&	0	& \dots \\
+	3	&	1	&	20	&	7.5	&	600	&	600	&	60	&	1	& \dots \\
+	4	&	1	&	30	&	7.5	&	900	&	700	&	50	&	0	& \dots \\
+	5	&	1	&	40	&	7.5	& 1,200	&	800	&	40	&	0	& \dots \\
+	6	&	1	&	50	&	7.5	& 1,500	&	900	&	30	&	0	& \dots \\
+	7	&	1	&	60	&	7.5	& 1,800	& 1,000	&	20	&	0	& \dots \\
+	\midrule
+	8	&	2	&	0	&	9.7	&	0	&	400	&	80	&	0	& \dots \\
+	9	&	2	&	10	&	9.7	& 388	&	550	&	70	&	0	& \dots \\
+	10	&	2	&	20	&	9.7	& 766	&	700	&	60	&	0	& \dots \\
+	11	&	2	&	30	&	9.7	& 1,164	&	850	&	50	&	0	& \dots \\
+	12	&	2	&	40	&	9.7	& 1,552	& 1,000	&	40	&	1	& \dots \\
+	13	&	2	&	50	&	9.7	& 1,940	& 1,150	&	30	&	0	& \dots \\
+	14	&	2	&	60	&	9.7	& 2,328	& 1,300	&	20	&	0	& \dots \\
+	\midrule
+	\dots	&	\dots	&	\dots	&	\dots	& \dots	& \dots	&	\dots	&	\dots& \dots \\
+	\bottomrule
+	\end{tabular}
+	\end{threeparttable}
+\end{table}
+\end{frame}
+
+
+\section{Estimation}
+
+\begin{frame}
+\frametitle{Estimation approach}
+\begin{itemize}
+	\item \blue{Bringing the theory to the data}
+	\begin{itemize}
+		\item We know the choice and we know the consumption and leisure for all jobs
+		\smallskip
+		\item We want to outback the preference coefficients $\vect{\alpha}$ of our utility function
+	\end{itemize}
+	\bigskip
+	\item \blue{Recall the utility function we assumed for our model}
+	\begin{itemize}
+		\item $U_{nj} = \underbrace{\alpha_1 \ln C_{nj} + \alpha_2 (\ln C_{nj})^2 + \alpha_3 \ln L_j + \alpha_4 (\ln L_j)^2 + \alpha_5  \ln C_{nj} \ln L_j}_{V_{nj}} + \epsilon_{nj}$
+		\smallskip
+		\item Moreover we assumed that $\epsilon_{nj}$ is extreme value distributed
+		\smallskip
+		\item Yields well known multinomial or conditional logit problem \litc{mcfadden_clogit_1974}
+		\smallskip
+		\item $P\left(U_{nj}>U_{nk}\forall k\neq j\right) = \frac{\exp V_{nj}}{\sum_{h\in J}\exp V_{nh}} \quad \forall \quad n=1,\dots,N, \quad j\in J$
+		\smallskip
+		\item We can estimate this model using maximum likelihood methods
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Estimation using Stata}
+\begin{itemize}
+	\item \blue{Define the likelihood function of this simple model}
+	\begin{itemize}
+		\item Log-likelihood given by: $\ln L=\sum_{n=1}^N\sum_{j\in J}y_{nj}\left(V_{nj} - \ln\sum_{h\in J}\exp V_{nh}\right)$
+		\smallskip
+		\item Where $y_{nj}=1$ if individual $n$ chose alternative $j$ and $y_{nj}=0$ otherwise
+	\end{itemize}
+	\bigskip
+	\item \blue{Turning to Stata}
+	\begin{itemize}
+		\item The model defined above can be estimated using Stata's \verb+clogit+ command
+		\smallskip
+		\item Call by: \verb+clogit choice ln_dpi ln_leisure ... [fw=...], group(id)+
+	\end{itemize}
+	\bigskip
+	\item \blue{Rather restrictive when it comes to more complicated models}
+	\begin{itemize}
+		\item User-written command \verb+lslogit+ for labor supply estimation \litc{loeffler_2013}
+		\smallskip
+		\item Supports many heavily used utility specifications and extensions \litc{loeffler_etal_2014}
+		\smallskip
+		\item Call by: \verb+lslogit choice [fw=...], group(id) con(dpi) lei(leisure)+
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Example output}
+\begin{center}
+	\tiny
+	\begin{verbatim}
+        . lslogit choice, group(id) c(dpi) l(leisure) boxcox cx(age*_m) lx1(age*_m)
+
+        Mixed Logit Labor Supply Model                    Number of obs   =       5761
+                                                          LR chi2(2)      =     171.99
+                                                          Prob > chi2     =     0.0000
+        Log likelihood = -1368.2779                       Pseudo R2       =     0.1456
+
+                                             (Std. Err. adjusted for clustering on id)
+        ------------------------------------------------------------------------------
+              choice |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+        -------------+----------------------------------------------------------------
+        Cx     age_m |   63.48062   10.78075     5.89   0.000     42.35074     84.6105
+              age2_m |  -8.688809   1.483041    -5.86   0.000    -11.59552   -5.782102
+               _cons |  -112.7283   19.40653    -5.81   0.000    -150.7644   -74.69218
+        -------------+----------------------------------------------------------------
+        CxL1   _cons |   .0862592   .0578086     1.49   0.136    -.0270435    .1995619
+        -------------+----------------------------------------------------------------
+        L1x    age_m |   1.314325   1.334258     0.99   0.325    -1.300773    3.929424
+              age2_m |  -.1787296   .1835297    -0.97   0.330    -.5384413    .1809821
+               _cons |   -2.32873    2.38518    -0.98   0.329    -7.003596    2.346136
+        -------------+----------------------------------------------------------------
+                /l_C |    .593499   .0875811     6.78   0.000     .4218433    .7651548
+               /l_L1 |  -2.624566   .5228987    -5.02   0.000    -3.649429   -1.599704
+        -------------+----------------------------------------------------------------
+             [dudes] |   .0341955
+        ------------------------------------------------------------------------------
+        Model: - Box-Cox utility function
+        
+        .
+	\end{verbatim}
+\end{center}
+\end{frame}
+
+
+\section{Prediction}
+
+\begin{frame}[fragile]
+\frametitle{Postestimation}
+\begin{itemize}
+	\item \blue{Maximum likelihood gives us estimates for preference coefficients $\vect{\hat{\alpha}}$}
+	\begin{itemize}
+		\item This allows us to predict utility levels $\hat{V}_{nj}$ from choosing the different jobs
+		\begin{itemize}
+			\item Call by: \verb+predict util, xb+
+		\end{itemize}
+		\smallskip
+		\item Using these we can predict choice probabilities or utility maximizing choice
+		\begin{itemize}
+			\item Call by: \verb+predict prob, pc1+
+		\end{itemize}
+		\smallskip
+		\item Enables us to check estimation fit by comparing observed and predicted choices
+	\end{itemize}
+\end{itemize}
+\begin{table}[htbp]
+	\centering\tiny
+	\begin{threeparttable}
+	\begin{tabular}{rrrrrrr}
+	\toprule
+	\textbf{\#} & \textbf{id} & \textbf{hours} & \textbf{choice} & \textbf{util} & \textbf{prob} & \textbf{\dots} \\
+	\midrule
+	1	&	1	&	0	&	0	& 	1.0	&	0.100	& \dots \\
+	2	&	1	&	10	&	0	& 	1.5	&	0.165	& \dots \\
+	3	&	1	&	20	&	1	& 	2.0	&	0.271	& \dots \\
+	4	&	1	&	30	&	0	& 	1.5	&	0.165	& \dots \\
+	5	&	1	&	40	&	0	& 	1.0	&	0.100	& \dots \\
+	6	&	1	&	50	&	0	& 	1.0	&	0.100	& \dots \\
+	7	&	1	&	60	&	0	& 	1.0	&	0.100	& \dots \\
+	\midrule
+	\dots	&	\dots	&	\dots	&	\dots	& \dots	&	\dots 	& \dots \\
+	\bottomrule
+	\end{tabular}
+	\end{threeparttable}
+\end{table}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Counterfactual analysis}
+\begin{itemize}
+	\item \blue{Holding preferences $\vect{\hat{\alpha}}$ constant, we can simulate policy reforms}
+	\begin{itemize}
+		\item E.g.\ by calculating new disposable incomes for all job categories
+		\begin{itemize}
+			\item \verb+gen dpi2 = ...+
+			\item \verb+replace dpi = dpi2+
+			\item \verb+predict prob2, pc1+
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+\begin{table}[htbp]
+	\centering\tiny
+	\begin{threeparttable}
+	\begin{tabular}{rrrrrrrrrr}
+	\toprule
+	\textbf{\#} & \textbf{id} & \textbf{hours} & \textbf{dpi} & \textbf{dpi2} & \textbf{choice} & \textbf{prob} & \textbf{prob2} & \textbf{\dots} \\
+	\midrule
+	1	&	1	&	0	&	400	&	300	&	0	& 0.100	&	0.07	& \dots \\
+	2	&	1	&	10	&	500	&	400	&	0	& 0.165	&	0.10	& \dots \\
+	3	&	1	&	20	&	600	&	500	&	1	& 0.271	&	0.14	& \dots \\
+	4	&	1	&	30	&	700	&	700	&	0	& 0.165	&	0.14	& \dots \\
+	5	&	1	&	40	&	800	&	900	&	0	& 0.100	&	0.20	& \dots \\
+	6	&	1	&	50	&	900	& 1,100	&	0	& 0.100	&	0.18	& \dots \\
+	7	&	1	&	60	& 1,000	& 1,300	&	0	& 0.100	&	0.18	& \dots \\
+	\midrule
+	\dots	&	\dots	&	\dots	&	\dots	& \dots	& \dots	&	\dots	&	\dots& \dots \\
+	\bottomrule
+	\end{tabular}
+	\end{threeparttable}
+\end{table}
+\end{frame}
+
+
+\section{Conclusion}
+
+\begin{frame}
+\frametitle{Model extensions}
+\begin{itemize}
+	\item \blue{These are the basics. Model can be extended in several dimensions}
+	\begin{itemize}
+		\item Alternative representation of job offers \litc{aaberge_etal_2009, dagsvik_etal_2014}
+		\smallskip
+		\item Different assumptions on the wage distribution and exogeneity \litc{loeffler_etal_2014}
+		\smallskip
+		\item Functional form of the utility function \litc{vansoest_etal_2002, loeffler_etal_2014}
+		\smallskip
+		\item Part-time restrictions and fixed costs \litc{vansoest_1995, euwals_vansoest_1999}
+		\smallskip
+		\item Random preferences and unobserved heterogeneity \litc{vansoest_1995, pacifico_2013}
+		\smallskip
+		\item Correlated wages and preferences \litc{breunig_etal_2008, blundell_shephard_2012}
+		\smallskip
+		\item Welfare stigma from benefit participation \litc{hoynes_1996, keane_moffitt_1998}
+		\smallskip
+		\item Job offers and different economic sectors \litc{dagsvik_strom_2006}
+	\end{itemize}
+	\bigskip
+	\item \blue{Huge literature, but all follow the same outline and workflow}
+	\begin{itemize}
+		\item Good intro: ``Labour supply and microsimulation'' \litc{creedy_kalb_2005, creedy_kalb_2006}
+		\smallskip
+		\item Handbook chapter: ``Labour Supply Models'' \litc{aaberge_colombino_2014}
+		\smallskip
+		\item Comprehensive sensitivity check with respect to assumptions \litc{loeffler_etal_2014}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\beginbackup
+
+\begin{frame}
+\begin{center}\bigskip\bigskip
+	Comments or questions? --- \href{mailto:loeffler@zew.de}{\blue{\nolinkurl{loeffler@zew.de}}}
+\end{center}
+\end{frame}
+
+
+% APPENDIX
+%\appendix
+%
+%\begin{frame}
+%\begin{center}
+%	{\LARGE Appendix}
+%\end{center}
+%\end{frame}
+%
+%
+%\section{Appendix}
+%
+%\begin{frame}[label=literature]
+%\frametitle{Existing literature
+%		\hyperlink{motivation<1>}{\beamerreturnbutton{motivation}}}
+%\begin{itemize}
+%	\item Long and extensive literature on the \blue{capitalization} of property taxes into house values and the \blue{tax shifting} on housing rents
+%	\begin{itemize}
+%		\item Different views on capitalization and incidence: ``capital tax view'' vs.\ ``benefit tax view'' \litc{marshall_1890,edgeworth_1897,bickerdike_1902,simon_1943,tiebout_1956,mieszkowski_1972,hamilton_1976,mieszkowski_zodrow_1989,fischel_1992,zodrow_2001,zodrow_2001_lincoln}
+%		\hyperlink{views<1>}{\beamergotobutton{property tax views}}
+%		\smallskip
+%		\item Some empirical evidence for tax shifting on housing rents \litc{orr_1968,orr_1970,orr_1972,heinberg_oates_1970,hyman_pasour_1973,dusansky_etal_1981,carroll_yinger_1994}
+%	\end{itemize}
+%	\bigskip
+%	\item \blue{No theoretical or empirical consensus} on the property tax incidence
+%	\bigskip
+%	\item Empirical studies on property tax incidence mainly for the US
+%	\begin{itemize}
+%		\item Usually one year cross-sectional data, less than 100 observations
+%		\smallskip
+%		\item Estimates range between 0-115\,\%, \blue{identification rather complicated}
+%	\end{itemize}
+%	\bigskip
+%	\item One study for Baden-Württemberg, finds no shifting on rents \litc{buettner_2003}
+%\end{itemize}
+%\end{frame}
+%
+%\begin{frame}[label=views]
+%\frametitle{Property tax views
+%		\hyperlink{motivation<1>}{\beamerreturnbutton{motivation}}}
+%\begin{itemize}
+%	\item \blue{Traditional view} \litc{edgeworth_1897,simon_1943,netzer_1966}
+%	\begin{itemize}
+%		\item Tax introduced in single municipality, perfectly elastic capital supply
+%		\smallskip
+%		\item Tenants bear the full tax burden of property taxation
+%	\end{itemize}
+%	\bigskip
+%	\item \blue{Capital tax view} \litc{mieszkowski_1972,mieszkowski_zodrow_1989}
+%	\begin{itemize}
+%		\item Extends ``old view'' with Harberger general equilibrium model
+%		\smallskip
+%		\item Capital owners bear the national average burden of property taxes
+%	\end{itemize}
+%	\bigskip
+%	\item \blue{Benefit tax view} \litc{tiebout_1956,oates_1969,hamilton_1976,fischel_1992}
+%	\begin{itemize}
+%		\item Households choose ``optimal municipality'', competing communities
+%		\smallskip
+%		\item Property taxes to finance local public goods, non-distortional
+%	\end{itemize}
+%	\bigskip
+%	\item<2-> \blue{Hard to provide exclusive evidence for different views} \litc{fischel_etal_2011}
+%	\begin{itemize}
+%		\item General equilibrium aspects hard to pin down empirically
+%		\smallskip
+%		\item Empirics focused on partial analysis (as in corporate tax literature)
+%	\end{itemize}
+%\end{itemize}
+%\end{frame}
+%
+%\begin{frame}[label=taxrates]
+%\frametitle{Federal tax rates (in \%)
+%		\hyperlink{institutions<1>}{\beamerreturnbutton{institutions}}}
+%\begin{table}[htbp]
+%	\centering\tiny
+%	\begin{threeparttable}
+%	\begin{tabular}{@{}l@{}rrlrr@{}r@{}}
+%	\toprule
+%	\multicolumn{2}{c}{\textbf{West Germany}} & & \multicolumn{4}{c}{\textbf{East Germany}}\\
+%	\cmidrule(r){1-2}\cmidrule(l){4-7}
+%						&		&&	& \multicolumn{3}{c}{Tax rate by population 1933} \\
+%	 \cmidrule(l){5-7}
+%	Building type 			& Tax rate && Building type		& <25k	& 25k-1,000k	& >1,000k \\
+%	\midrule
+%				 		& 		&& \multicolumn{4}{c}{Built before 1924} \\
+%	 \cmidrule(l){4-7}
+%	 One-family houses		& 		&& One-family houses		& 	&	&	 \\
+%	\qquad First 38,347 EUR	& 0.26	&& \qquad First 15,339 EUR	& 1.0	& 0.8	& 0.6 \\
+%	\qquad Additional value	& 0.35	&& \qquad Additional value		& 1.0	& 1.0	& 1.0 \\
+%	Two-family houses		& 0.31 	&& Other houses			& 1.0	& 1.0	& 1.0 \\
+%				 		& 		&& \multicolumn{4}{c}{Built after 1924} \\
+%	 \cmidrule(l){4-7}
+%						& 	 	&& One-family houses		&	& 	& 	 \\
+%						& 	 	&& \qquad First 15,339 EUR	& 0.8	& 0.6	& 0.5 \\
+%						& 	 	&& \qquad Additional value		& 0.8	& 0.7	& 0.6 \\
+%						& 	 	&& Other houses			& 0.8	& 0.7	& 0.6	 \\
+%				 		& 		&& \multicolumn{4}{c}{Vacant lots} \\
+%	 \cmidrule(l){4-7}
+%						& 	 	&& Business purpose			& 1.0	& 1.0	& 1.0 \\
+%	Other houses/vacant lots	& 0.35	&& Other					& 0.5	& 0.5	& 0.5 \\
+%	\bottomrule
+%	\end{tabular}
+%	\begin{tablenotes}
+%	\item \emph{Source:} §§ 15, 41 \emph{Grundsteuergesetz}, §§ 29-33 \emph{Grundsteuerdurchführungsverordnung}.
+%	\end{tablenotes}
+%	\end{threeparttable}
+%\end{table}
+%\end{frame}
+%
+%\begin{frame}[label=equilibrium]
+%\frametitle{Spatial equilibrium
+%		\hyperlink{predictions<1>}{\beamerreturnbutton{predictions}}}
+%\begin{itemize}
+%	\item These supply and demand equations define the equilibrium:
+%	\begin{itemize}
+%		\item \blue{Housing demand and labor supply}: $\ln N_c^{LS} = \ln N_c^{HD} = \frac{\ln w_c}{s} - \gamma \frac{\ln r_c}{s} - \gamma \frac{\ln (1+t_c)}{s} + \frac{\ln A_c}{s} - \ln {C} - \ln{\pi}$
+% 		\smallskip
+%		\item \blue{Inverse labor demand}: $\ln w_c = a_0 + \tilde{X}_c + \eta \ln N_c^{LD}$
+%		\smallskip 
+%		\item \blue{Inverse housing supply}: $\ln r_c =\ln Z_c + k_c \ln N_c^{HS}$
+%	\end{itemize}
+%	\bigskip
+%	\item \blue{Spatial equilibrium} can be described by the following quantities:
+%	\begin{itemize}
+%		\item $\ln N_c^{\ast} = \frac{a_0 - s\bar{U}  - \gamma \ln (1+t_c)  + \tilde{X}_c + \ln A_c - \gamma \ln Z_c}{s + \gamma k_c - \eta}$
+%		\smallskip
+% 		\item $\ln w_c^{\ast} = \frac{(s + \gamma k_c)(a_0 + \tilde{X}_c) + \eta (\ln A_c - \gamma \ln (1+t_c) -\gamma \ln Z_c-s\bar{U})}{s + \gamma k_c - \eta}$
+%		\smallskip
+% 		\item $\ln r_c^{\ast} = \frac{(s - \eta) \ln Z_c + k_c (a_0 - s \bar{U} - \gamma \ln (1+t_c) + \tilde{X}_c + \ln A_c)}{s + \gamma  k_c - \eta}$
+%	\end{itemize}
+%\end{itemize}
+%\end{frame}
+
+
+\section{References}
+
+\begin{frame}[t,allowframebreaks]
+\frametitle{References}
+\scriptsize
+\bibliography{bibrefs}
+\bibliographystyle{dcu}
+\end{frame}
+
+\backupend
+
+\end{document}
