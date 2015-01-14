@@ -1,6 +1,6 @@
 # REDISTRIBUTION IN MICROSIMULATION MODELS WITH BEHAVIORAL RESPONSES
 
-Applied Session, [Tenth Winter School on Inequality and Social Welfare Theory](http://dse.univr.it/it/index.php/program-mainmenu-101), Alba di Canazei, January 14, 2015.
+Applied Session, [10th Winter School on Inequality and Social Welfare Theory](http://dse.univr.it/it/index.php/program-mainmenu-101), Alba di Canazei, January 14, 2015.
 
 
 ## Contents
